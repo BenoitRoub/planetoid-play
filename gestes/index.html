@@ -11,10 +11,17 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
+<script>
+// keep a copy of the app on the phone: it opens even when the network is slow, and updates when it can
+if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+// hide the loading screen once the game has drawn its first frame
+(function wait() { if (window.__ready) { var l = document.getElementById('loading'); if (l) l.remove(); } else setTimeout(wait, 150); })();
+</script>
 <style>
 [hidden] { display: none !important; }
 html, body { overscroll-behavior: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
 /* the game is played in landscape: in portrait on a phone, ask to turn it */
+#loading { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; background: #d9e6b4; color: #2c3a22; font: 700 1.15rem/1.4 "Alegreya Sans", system-ui, sans-serif; }
 #turn { display: none; }
 @media (orientation: portrait) and (pointer: coarse) {
   #turn { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(24, 34, 20, 0.92); color: #f6f4ea; font: 700 1.2rem/1.4 "Alegreya Sans", system-ui, sans-serif; text-align: center; padding: 24px; }
@@ -23,11 +30,12 @@ html, body { overscroll-behavior: none; -webkit-touch-callout: none; -webkit-tap
 </head>
 <body>
 <div id="turn">Tourne ton téléphone<br>pour jouer en paysage.</div>
+<div id="loading">Chargement du village…</div>
 <title>Les gestes du village</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@500;700;800&display=swap" media="print" onload="this.media='all'">
 <style>
 /* The game fills the screen. The HUD keeps to the edges on dark, slightly warm plates with a gold rim: stock at
    the top left, help at the top right, the army and convoy buttons at the bottom left, one thing at the bottom
