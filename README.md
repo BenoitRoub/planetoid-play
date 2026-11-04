@@ -7,4 +7,5 @@ Versions jouables des prototypes. Ouvre un lien dans Safari, puis Partager, « S
 - Le duel des vétérans (le même personnage fait dans Blender et en Three.js, côte à côte), en paysage : https://benoitroub.github.io/planetoid-play/duel/
 - Le vétéran de Tripo (modèle généré depuis la planche, texture et squelette en variantes), en paysage : https://benoitroub.github.io/planetoid-play/tripo/
 - Les troupes (le soldat et l'archère dans un combat en boucle, et le récolteur qui va déraciner le cristal, seulement à la caméra du jeu, à la bonne distance), en paysage : https://benoitroub.github.io/planetoid-play/troupes/
+- La carte (une grande carte procédurale dans le brouillard : récolter, former des troupes, trouver le village du bot et le prendre), en paysage, une nouvelle carte à chaque ouverture (`?seed=` pour en rejouer une) : https://benoitroub.github.io/planetoid-play/carte/
 - Le premier POC (version spatiale) : https://benoitroub.github.io/planetoid-play/
