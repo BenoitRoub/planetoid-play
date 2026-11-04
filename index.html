@@ -22,16 +22,10 @@ if ('serviceWorker' in navigator) addEventListener('load', () => navigator.servi
 <style>
 [hidden] { display: none !important; }
 html, body { overscroll-behavior: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
-/* the game is played in landscape: in portrait on a phone, ask to turn it */
-#turn { display: none; }
-@media (orientation: portrait) and (pointer: coarse) {
-  #turn { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, #6a5f4f, #2b251d); color: #fff; font: 20px/1.35 "Lilita", "Arial Rounded MT Bold", system-ui, sans-serif; text-align: center; padding: 24px;
-    text-shadow: 0 1.5px 0 #1d1409, 1.5px 0 0 #1d1409, -1.5px 0 0 #1d1409, 0 -1.5px 0 #1d1409, 0 2.5px 0 #1d1409; }
-}
+/* the game is played in landscape: a phone held upright shows it turned a quarter (pages/carte.html, ui/rotate.ts) */
 </style>
 </head>
 <body>
-<div id="turn">Tourne ton téléphone<br>pour jouer en paysage.</div>
 <title>Shardholm</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
@@ -87,6 +81,9 @@ body.raid:not(.replay) #guide { bottom: auto; top: calc(var(--t) + 64px); }
 .stile.gift .price > .n:first-child { color: #9dff7a; }
 .ctr.hp .track i { background: linear-gradient(#ffb0a0, #ff5a47 60%, #c22a20); }
 .ctr.hp { width: 120px; }
+/* a live raid shows its loot where the board has it; the maison's life and the defenders stay for a battle watched again */
+body.raid:not(.replay) .rhud .tl, body.replay .rhud .rloot { display: none; }
+.lootpop { position: fixed; z-index: 3; pointer-events: none; transition: none; }
 .rhud .tl { position: absolute; left: calc(var(--l) + 8px); top: calc(var(--t) + 8px); display: flex; flex-direction: column; gap: 12px; }
 /* the loading screen: the icon, the name, a bar that moves on with the steps (the home-screen icon's colours) */
 #loading { position: fixed; inset: 0; z-index: 9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
@@ -127,7 +124,23 @@ body.winopen #toast { top: calc(var(--t) + 4px); }
 #lobby li i.on { background: #4cc93f; }
 #lobby li.me { font-weight: 700; }
 #lobby li small { color: #e9e1cd; font-weight: 600; }
+/* the game in landscape at once (Benoit, 04/11): a phone held upright shows the whole page turned a quarter clockwise
+   (ui/rotate.ts turns the touches back); the safe areas follow the turn, and the sizes measured on the screen are
+   swapped (--vw, --vh: a hundredth of the page's width and height) */
+:root { --vw: 1vw; --vh: 1vh; }
+html.rot { --vw: calc(var(--ph) / 100); --vh: calc(var(--pw) / 100); }
+html.rot body { position: fixed; top: 0; left: 0; width: var(--ph); height: var(--pw); transform-origin: 0 0; transform: translateX(var(--pw)) rotate(90deg);
+  --l: max(16px, env(safe-area-inset-top, 0px)); --r: max(16px, env(safe-area-inset-bottom, 0px));
+  --t: max(6px, env(safe-area-inset-right, 0px)); --b: max(10px, env(safe-area-inset-left, 0px)); }
 </style>
+<script>
+// before anything draws: turned or not, and the screen's size for the turn (?rot turns it on a computer, for tests)
+(function () {
+  var d = document.documentElement, q = matchMedia('(orientation: portrait) and (pointer: coarse)'), f = /[?&]rot(&|$)/.test(location.search);
+  function set() { d.style.setProperty('--pw', innerWidth + 'px'); d.style.setProperty('--ph', innerHeight + 'px'); d.classList.toggle('rot', q.matches || f); scrollTo(0, 0); }
+  set(); addEventListener('resize', set); if (q.addEventListener) q.addEventListener('change', set);
+})();
+</script>
 <canvas id="scene" aria-label="Ton village, la forêt, les autres villages au loin"></canvas>
 <div id="loading"><span class="logo" id="load-logo"></span><span class="title n">Shardholm</span><div class="ctr"><span class="track"><i id="load-bar"></i></span></div><span class="step n" id="load-step">Chargement…</span></div>
 
@@ -173,6 +186,12 @@ body.winopen #toast { top: calc(var(--t) + 4px); }
     <div class="ctr hp" id="r-hp"><span class="track"><i></i></span><span class="v n">900</span><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg></div>
     <div class="ctr army" id="r-def"><span class="track"></span><span class="v n">0</span><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></div>
   </div>
+  <!-- the loot (validated 04/11, the raid's board): what the raid has taken so far, out of all it can take -->
+  <div class="rloot" id="r-loot">
+    <div class="lrow"><svg class="ic" aria-hidden="true"><use href="#i-crystal"/></svg><span class="n big" id="rl-crystal">0</span><span class="n of" id="rl-crystal-of">/ 0</span></div>
+    <div class="lrow"><svg class="ic" aria-hidden="true"><use href="#i-mushroom"/></svg><span class="n big" id="rl-mushroom">0</span><span class="n of" id="rl-mushroom-of">/ 0</span></div>
+    <div class="lrow" id="rl-runes"><svg class="ic" aria-hidden="true"><use href="#i-rune"/></svg><span class="n big" id="rl-rune">0</span><span class="n of" id="rl-rune-of">/ 0</span></div>
+  </div>
   <div class="rwho" id="r-who"></div>
   <div class="rclock"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><span class="n" id="r-clock">3:00</span></div>
   <button class="rretreat" id="retreat" aria-label="Retraite : les survivants rentrent"><span class="face"><svg class="ic" aria-hidden="true"><use href="#i-flag"/></svg><span class="n">Retraite</span></span></button>
@@ -186,7 +205,7 @@ body.winopen #toast { top: calc(var(--t) + 4px); }
 <div id="toast" role="status" hidden></div>
 <div id="guide" hidden><span class="gp"><img data-art="recolteur-tete" alt=""></span><span class="gt" id="guide-t"></span><button class="gx" id="guide-skip">Passer le tuto</button></div>
 <div id="lobby" role="dialog" aria-label="Jouer à plusieurs"><div class="win lobby"><div class="ribbon plain"><span class="n" id="lobby-title">Jouer à plusieurs</span></div><button class="x" id="lobby-close" aria-label="Fermer"><span class="face"><svg class="ic" aria-hidden="true"><use href="#i-close"/></svg></span></button><div class="well" id="lobby-body"></div></div></div>
-<script type="module" src="./app-VNHG25I6.js"></script>
+<script type="module" src="./app-MGWIWY3P.js"></script>
 
 </body>
 </html>
