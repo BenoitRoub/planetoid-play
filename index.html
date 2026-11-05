@@ -33,7 +33,9 @@ html, body { overscroll-behavior: none; -webkit-touch-callout: none; -webkit-tap
    page shares (the touches, the windows, the message) come from ui/ (ui/theme.ts injects them); this sheet only lays
    out what is the page's own: its canvases, the raid's counters, the loading screen, the lobby. Sizes are iPhone points. */
 html, body { background: #6c8a3e; }
-#scene, #warmap, #clouds { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+/* the canvases at the screen's size as measured below (not the window's 100%: see the script) */
+#scene, #warmap, #clouds { position: fixed; top: 0; left: 0; width: var(--pw, 100%); height: var(--ph, 100%); display: block; touch-action: none; }
+html.rot #scene, html.rot #warmap, html.rot #clouds { width: 100%; height: 100%; }
 #warmap, #clouds { display: none; }
 body.map #warmap, body.map #clouds { display: block; }
 /* the war map has the village's HUD without « Construire » (GDD 04/11); placing a building hides what would get in the way */
@@ -43,14 +45,12 @@ body.walling #btn-build, body.walling #acts, body.walling .units, body.walling #
 .act.on .face { border-color: #5a4210; box-shadow: 0 2px 0 var(--ink), 0 0 0 2px var(--gold), 0 0 10px 2px rgba(255, 210, 90, .7), inset 0 1.5px 0 rgba(255, 255, 255, .7); }
 #clouds { pointer-events: none; }
 .ctr.army { width: 58px; }
-/* the runes (GDD 03/11): the counter is a button; a rune's colour says its rarity */
-button.ctr.runes { border: 0; padding: 0; background: none; pointer-events: auto; cursor: pointer; font: inherit; color: inherit; text-align: left; }
+/* the runes (GDD 03/11), the rank and the trophies: the counters are buttons; a rune's colour says its rarity (--rc) */
+button.ctr { border: 0; padding: 0; background: none; pointer-events: auto; cursor: pointer; font: inherit; color: inherit; text-align: left; }
 .rn { position: relative; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; width: 58px; height: 64px; border-radius: 8px;
   border: 1.5px solid var(--ink, #2a2016); background: var(--card, #efe6d2); box-shadow: 0 2px 0 var(--ink, #2a2016); cursor: pointer; font: inherit; color: inherit; padding: 2px; }
 .rn .ic { width: 28px; height: 28px; }
 .rn .n { font-size: 10px; line-height: 1.05; text-align: center; }
-.rn.r0 .ic { filter: grayscale(1) brightness(1.05); } .rn.r1 .ic { filter: hue-rotate(10deg) saturate(1.4); }
-.rn.r2 .ic { filter: hue-rotate(80deg) saturate(1.6); } .rn.r3 .ic { filter: hue-rotate(-150deg) saturate(2) brightness(1.15); }
 .rn.r0 { background: #e9e4da; } .rn.r1 { background: #d9ecfb; } .rn.r2 { background: #ead9fb; } .rn.r3 { background: #fbecc4; }
 .rn.empty { background: rgba(0, 0, 0, .18); border-style: dashed; box-shadow: none; }
 .rn.empty .ic { opacity: .3; }
@@ -59,23 +59,34 @@ button.ctr.runes { border: 0; padding: 0; background: none; pointer-events: auto
 .rslot { display: flex; align-items: center; gap: 8px; }
 .rslot .who { width: 92px; font: 600 12px/1.2 "Fredoka", system-ui, sans-serif; color: #f6efe0; }
 .rinv { display: flex; flex-wrap: wrap; gap: 6px; min-height: 66px; }
-.efell.rune.r0 .ic { filter: grayscale(1); } .efell.rune.r2 .ic { filter: hue-rotate(80deg) saturate(1.6); } .efell.rune.r3 .ic { filter: hue-rotate(-150deg) saturate(2); }
+/* the game's end: the podium */
+.podium { display: flex; justify-content: center; align-items: flex-end; gap: 10px; margin: 4px 0 8px; }
+.podium .pd { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 92px; }
+.podium .pd .blk { width: 100%; border-radius: 6px 6px 0 0; border: 1.5px solid var(--ink); background: var(--stone); display: grid; place-items: center; }
+.podium .pd .ic { width: 22px; height: 22px; } .podium .pd .n { font-size: 12px; }
+.podium .pd.me .blk { background: linear-gradient(#ffe7a6, #e7ae45); }
 /* the counters of the raid */
 .rhud, .rhud > div { pointer-events: none; }
 .rhud button { pointer-events: auto; }
 .rhud { position: fixed; inset: 0; z-index: 2; }
 body.raid .hud, body.raid .acts, body.raid .bname { display: none; }
 body.replay .rhud .deck { display: none; }
-/* the tutorial (GDD 04/11, « un petit tuto »): the harvester says what to do next, the button to touch glows */
-#guide { position: fixed; left: 50%; bottom: calc(var(--b, 0px) + 92px); transform: translateX(-50%); z-index: 5; display: flex; align-items: center; gap: 10px;
-  max-width: min(460px, 86vw); padding: 7px 12px 8px 8px; border-radius: 12px; background: rgba(38, 33, 27, .9);
-  box-shadow: 0 2px 0 rgba(0, 0, 0, .35), inset 0 0 0 1.5px rgba(242, 195, 90, .6); pointer-events: auto; }
+/* the tutorial (GDD 04/11, « un petit tuto »): the récolteur, as an advisor, says what to do next, the button to touch glows. Its look
+   (validated 05/11, direction B « le conseiller au bord »): his portrait over the left edge, under the counters, a
+   parchment card beside it; the middle of the screen stays free */
+#guide { position: fixed; left: calc(var(--l) + 30px); top: calc(var(--t) + 152px); z-index: 5; display: flex; align-items: center; gap: 10px;
+  max-width: min(300px, calc(46 * var(--vw, 1vw))); padding: 8px 12px 9px 50px; border-radius: 12px; background: var(--card);
+  box-shadow: 0 0 0 1.5px var(--ink), 0 2px 0 var(--ink), inset 0 0 0 2.5px rgba(242, 195, 90, .75); pointer-events: auto; }
 #guide[hidden] { display: none; }
-#guide .gp { flex: none; width: 46px; height: 46px; border-radius: 50%; overflow: hidden; background: #e8c88a; box-shadow: 0 0 0 2px var(--ink, #2a2016); }
+#guide .gp { position: absolute; left: -26px; top: 50%; transform: translateY(-50%); width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: #e8c88a;
+  box-shadow: 0 0 0 2.5px var(--gold), 0 0 0 4px var(--ink), 0 3px 0 4px var(--ink); }
 #guide .gp img { width: 100%; height: 100%; object-fit: cover; }
-#guide .gt { font: 600 13px/1.3 "Fredoka", system-ui, sans-serif; color: #f6efe0; }
-#guide .gx { flex: none; align-self: flex-start; margin-left: 4px; border: 0; background: none; color: #c9b893; font: 600 10.5px "Fredoka", system-ui, sans-serif; text-decoration: underline; cursor: pointer; }
-body.raid:not(.replay) #guide { bottom: auto; top: calc(var(--t) + 64px); }
+#guide .gt { font: 600 12.5px/1.28 "Fredoka", system-ui, sans-serif; color: var(--ink); }
+#guide .gn { flex: none; border: 1.5px solid var(--ink); border-radius: 9px; padding: 4px 10px 5px; background: var(--btn-go); color: #fff; font: 600 12px "Fredoka", system-ui, sans-serif; text-shadow: var(--o); box-shadow: 0 2px 0 var(--ink); cursor: pointer; }
+#guide .gn[hidden] { display: none; }
+#guide .gx { position: absolute; right: 8px; bottom: -17px; border: 0; padding: 0; background: none; color: #fff6e2; text-shadow: var(--o); font: 600 10px "Fredoka", system-ui, sans-serif; text-decoration: underline; cursor: pointer; }
+/* in a live raid, the left column has the loot: the card goes to the top, in the middle */
+body.raid:not(.replay) #guide { left: 50%; top: calc(var(--t) + 64px); transform: translateX(-50%); }
 @keyframes hintpulse { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(255, 220, 90, 0)); } 50% { transform: scale(1.08); filter: drop-shadow(0 0 8px rgba(255, 220, 90, .95)); } }
 .hint { animation: hintpulse 1.1s ease-in-out infinite; }
 .stile.gift .price > .n:first-child { color: #9dff7a; }
@@ -93,8 +104,6 @@ body.raid:not(.replay) .rhud .tl, body.replay .rhud .rloot { display: none; }
 #loading .ctr { width: 220px; height: 13px; margin-top: 6px; }
 #loading .ctr .track i { width: 8%; background: linear-gradient(#fff2a8, #ffc93e 60%, #e2780f); transition: width .3s; }
 #loading .step { font-size: 12px; }
-/* an attack on its way: the message goes under its banner */
-body:has(#incoming:not([hidden])) #toast { top: calc(var(--t) + 72px); }
 body.winopen #toast { top: calc(var(--t) + 4px); }
 #btn-multi .badge.code { top: auto; bottom: -7px; right: 50%; transform: translateX(50%); font-size: 8px; min-width: 0; }
 #btn-multi .badge.code:empty { display: none; }
@@ -134,14 +143,31 @@ html.rot body { position: fixed; top: 0; left: 0; width: var(--ph); height: var(
   --t: max(6px, env(safe-area-inset-right, 0px)); --b: max(10px, env(safe-area-inset-left, 0px)); }
 </style>
 <script>
-// before anything draws: turned or not, and the screen's size for the turn (?rot turns it on a computer, for tests)
+// before anything draws: turned or not, and the screen's size (?rot turns it on a computer, for tests). The game
+// installed on an iPhone is given a window too short by the status bar after a turn or a return to the app, and
+// the page's ground showed under it as a green band (Benoit, 05/11): there, the screen's own size is the size; and
+// everywhere the size is measured again a moment after anything that may change it, as it comes late.
 (function () {
   var d = document.documentElement, q = matchMedia('(orientation: portrait) and (pointer: coarse)'), f = /[?&]rot(&|$)/.test(location.search);
-  function set() { d.style.setProperty('--pw', innerWidth + 'px'); d.style.setProperty('--ph', innerHeight + 'px'); d.classList.toggle('rot', q.matches || f); scrollTo(0, 0); }
-  set(); addEventListener('resize', set); if (q.addEventListener) q.addEventListener('change', set);
+  var port = matchMedia('(orientation: portrait)'), ios = navigator.standalone === true;
+  function set() {
+    var w = innerWidth, h = innerHeight;
+    if (ios && screen.width && screen.height) {
+      var a = Math.min(screen.width, screen.height), b = Math.max(screen.width, screen.height);
+      w = Math.max(w, port.matches ? a : b); h = Math.max(h, port.matches ? b : a);
+    }
+    window.__screen = { w: w, h: h };
+    d.style.setProperty('--pw', w + 'px'); d.style.setProperty('--ph', h + 'px'); d.classList.toggle('rot', q.matches || f); scrollTo(0, 0);
+  }
+  var later = 0;
+  function soon() { set(); clearTimeout(later); later = setTimeout(function () { set(); later = setTimeout(set, 600); }, 150); }
+  set(); addEventListener('resize', soon); addEventListener('orientationchange', soon); addEventListener('pageshow', soon);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) soon(); });
+  if (window.visualViewport) visualViewport.addEventListener('resize', soon);
+  if (q.addEventListener) q.addEventListener('change', soon);
 })();
 </script>
-<canvas id="scene" aria-label="Ton village, la forêt, les autres villages au loin"></canvas>
+<canvas id="scene" aria-label="Ton village"></canvas>
 <div id="loading"><span class="logo" id="load-logo"></span><span class="title n">Shardholm</span><div class="ctr"><span class="track"><i id="load-bar"></i></span></div><span class="step n" id="load-step">Chargement…</span></div>
 
 <div class="hud" id="hud">
@@ -152,9 +178,10 @@ html.rot body { position: fixed; top: 0; left: 0; width: var(--ph); height: var(
     <button class="ctr army runes" id="c-rune" aria-label="Tes runes" data-do="runes"><span class="track"></span><span class="v n">0</span><svg class="ic" aria-hidden="true"><use href="#i-rune"/></svg></button>
   </div>
   <div class="tc">
+    <button class="ctr rank" id="c-rank" aria-label="Ton rang au classement" data-do="ladder"><span class="track"></span><span class="v n">1</span><svg class="ic" aria-hidden="true"><use href="#i-rank"/></svg></button>
+    <button class="ctr troph" id="c-troph" aria-label="Tes trophées" data-do="ladder"><span class="track"></span><span class="v n">0</span><svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg></button>
     <div class="ctr builders" id="c-bld" aria-label="Ouvriers libres"><span class="track"></span><span class="v n">2/2</span><svg class="ic" aria-hidden="true"><use href="#i-hammer"/></svg></div>
-    <div class="ctr nrg" id="c-nrg"><span class="track"><i></i></span><span class="v n">100</span><svg class="ic" aria-hidden="true"><use href="#i-energy"/></svg></div>
-    <div class="ctr shield" id="c-shield" hidden aria-label="Bouclier"><span class="track"></span><span class="v n"></span><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></div>
+    <div class="ctr end" id="c-end" aria-label="Fin de la partie dans"><span class="track"></span><span class="v n"></span><svg class="ic" aria-hidden="true"><use href="#i-countdown"/></svg></div>
   </div>
   <div class="tr">
     <span class="n" id="version"></span>
@@ -165,8 +192,7 @@ html.rot body { position: fixed; top: 0; left: 0; width: var(--ph); height: var(
   </div>
   <div class="bl">
     <div class="units">
-      <button class="ubtn" id="btn-army" aria-label="Armée"><span class="face"><img data-art="soldat-tete"><span class="tm n" id="tm-army"></span></span><span class="st"><svg class="ic" aria-hidden="true"><use id="st-army" href="#i-house"/></svg></span></button>
-      <button class="ubtn" id="btn-harv" aria-label="Récolteur"><span class="face"><img data-art="recolteur-tete"><span class="tm n" id="tm-harv"></span></span><span class="st"><svg class="ic" aria-hidden="true"><use id="st-harv" href="#i-house"/></svg></span></button>
+      <button class="ubtn" id="btn-army" aria-label="Armée : sa composition"><span class="face"><img data-art="soldat-tete"><span class="tm n" id="tm-army"></span></span><span class="st"><svg class="ic" aria-hidden="true"><use id="st-army" href="#i-swords"/></svg></span></button>
     </div>
     <button class="btn big nav" id="btn-view"><span class="face"><svg class="ic" aria-hidden="true"><use id="view-ic" href="#i-map"/></svg><span class="lab n" id="view-lab">Carte</span></span></button>
   </div>
@@ -174,7 +200,6 @@ html.rot body { position: fixed; top: 0; left: 0; width: var(--ph); height: var(
     <button class="btn small neutral" id="btn-journal" aria-label="Journal"><span class="face"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg></span><span class="badge n" id="journal-n" hidden></span></button>
     <button class="btn big action" id="btn-build" data-do="shop"><span class="face"><svg class="ic" aria-hidden="true"><use href="#i-hammer"/></svg><span class="lab n">Construire</span></span></button>
   </div>
-  <button class="incoming" id="incoming" hidden aria-label="Une attaque arrive"><span class="face"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><span class="n" id="inc-n"></span><span class="n" id="inc-t"></span></span></button>
 </div>
 
 <div class="bname" id="sel-name" hidden></div>
@@ -189,7 +214,7 @@ html.rot body { position: fixed; top: 0; left: 0; width: var(--ph); height: var(
   <!-- the loot (validated 04/11, the raid's board): what the raid has taken so far, out of all it can take -->
   <div class="rloot" id="r-loot">
     <div class="lrow"><svg class="ic" aria-hidden="true"><use href="#i-crystal"/></svg><span class="n big" id="rl-crystal">0</span><span class="n of" id="rl-crystal-of">/ 0</span></div>
-    <div class="lrow"><svg class="ic" aria-hidden="true"><use href="#i-mushroom"/></svg><span class="n big" id="rl-mushroom">0</span><span class="n of" id="rl-mushroom-of">/ 0</span></div>
+    <div class="lrow" id="rl-mush-row"><svg class="ic" aria-hidden="true"><use href="#i-mushroom"/></svg><span class="n big" id="rl-mushroom">0</span><span class="n of" id="rl-mushroom-of">/ 0</span></div>
     <div class="lrow" id="rl-runes"><svg class="ic" aria-hidden="true"><use href="#i-rune"/></svg><span class="n big" id="rl-rune">0</span><span class="n of" id="rl-rune-of">/ 0</span></div>
   </div>
   <div class="rwho" id="r-who"></div>
@@ -198,14 +223,15 @@ html.rot body { position: fixed; top: 0; left: 0; width: var(--ph); height: var(
   <div class="deck">
     <button class="dcard sel" id="pick-soldat" aria-label="Poser des soldats"><img data-art="soldat"><span class="cnt n" id="left-soldat">×0</span></button>
     <button class="dcard" id="pick-archere" aria-label="Poser des archères"><img data-art="archere"><span class="cnt n" id="left-archere">×0</span></button>
-    <button class="dcard" id="pick-veteran" aria-label="Poser des vétérans" hidden><img data-art="veteran"><span class="cnt n" id="left-veteran">×0</span></button>
+    <button class="dcard" id="pick-veteran" aria-label="Poser des colosses" hidden><img data-art="veteran"><span class="cnt n" id="left-veteran">×0</span></button>
+    <button class="dcard" id="pick-pillard" aria-label="Poser des pillards" hidden><img data-art="pillard"><span class="cnt n" id="left-pillard">×0</span></button>
   </div>
 </div>
 
 <div id="toast" role="status" hidden></div>
-<div id="guide" hidden><span class="gp"><img data-art="recolteur-tete" alt=""></span><span class="gt" id="guide-t"></span><button class="gx" id="guide-skip">Passer le tuto</button></div>
+<div id="guide" hidden><span class="gp"><img data-art="recolteur-tete" alt=""></span><span class="gt" id="guide-t"></span><button class="gn" id="guide-next" hidden>Suite</button><button class="gx" id="guide-skip">Passer le tuto</button></div>
 <div id="lobby" role="dialog" aria-label="Jouer à plusieurs"><div class="win lobby"><div class="ribbon plain"><span class="n" id="lobby-title">Jouer à plusieurs</span></div><button class="x" id="lobby-close" aria-label="Fermer"><span class="face"><svg class="ic" aria-hidden="true"><use href="#i-close"/></svg></span></button><div class="well" id="lobby-body"></div></div></div>
-<script type="module" src="./app-MGWIWY3P.js"></script>
+<script type="module" src="./app-FM6Q3STD.js"></script>
 
 </body>
 </html>
