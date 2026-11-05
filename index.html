@@ -129,6 +129,26 @@ body.raid:not(.replay) #guide { left: 50%; top: calc(var(--t) + 64px); transform
 body.raid:not(.replay) .rhud .tl, body.replay .rhud .rloot { display: none; }
 .lootpop { position: fixed; z-index: 3; pointer-events: none; transition: none; }
 .rhud .tl { position: absolute; left: calc(var(--l) + 8px); top: calc(var(--t) + 8px); display: flex; flex-direction: column; gap: 12px; }
+/* scouting another village (05/11, « Explorer »): the village as it stands, our HUD put away; what a raid could take at
+   the top left, its name in the middle, Retour and Attaquer at the bottom corners (the HUD's own big buttons) */
+.shud { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
+.shud button { pointer-events: auto; }
+.shud .rloot .lab { font-size: 11px; color: #e9e1cd; margin-top: -1px; }
+.shud .rwho { flex-direction: column; gap: 3px; }
+.shud .rwho .top { display: flex; align-items: center; gap: 5px; }
+.shud .rwho .st { display: flex; align-items: center; gap: 10px; }
+.shud .rwho .st .n { display: flex; align-items: center; gap: 2px; font-size: 12px; }
+.shud .rwho .st .ic { width: 16px; height: 16px; filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .45)); }
+.shud .btn.off .face { filter: grayscale(.85) brightness(.9); }
+.shud .shint { position: absolute; left: 50%; bottom: calc(var(--b) + 4px); transform: translateX(-50%); font-size: 12px; opacity: .92; text-align: center; }
+body.scout .hud > .tl, body.scout .hud > .tc, body.scout .hud > .tr, body.scout .hud > .bl, body.scout .hud > .br, body.scout .acts, body.scout #guide { display: none; }
+/* the scouting view's touched building: its name, and under it what it would give */
+.bname.scouted { flex-direction: column; gap: 3px; }
+.bname.scouted .row { display: flex; align-items: center; gap: 5px; }
+.bname.scouted .row .ic { width: 18px; height: 18px; filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .45)); }
+.bname.scouted .row .n.s { font-size: 13px; }
+.foot .go + .go { margin-left: 10px; }
+.foot .go.nav .face { background: var(--btn-nav); }
 /* the loading screen: the icon, the name, a bar that moves on with the steps (the home-screen icon's colours) */
 #loading { position: fixed; inset: 0; z-index: 9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
   background: radial-gradient(circle at 50% 38%, #ffdc8c, #f0a24a 46%, #b65a22 100%); }
@@ -261,10 +281,23 @@ html.rot body { position: fixed; top: 0; left: 0; width: var(--ph); height: var(
   </div>
 </div>
 
+<!-- scouting another village (05/11): what a raid could take, its name, Retour and Attaquer -->
+<div class="shud" id="shud" hidden>
+  <div class="rloot">
+    <div class="lrow"><svg class="ic" aria-hidden="true"><use href="#i-crystal"/></svg><span class="n big" id="sl-crystal">0</span></div>
+    <div class="lrow" id="sl-mush-row"><svg class="ic" aria-hidden="true"><use href="#i-mushroom"/></svg><span class="n big" id="sl-mushroom">0</span></div>
+    <div class="lrow" id="sl-rune-row"><svg class="ic" aria-hidden="true"><use href="#i-rune"/></svg><span class="n big">1</span></div>
+    <span class="n lab">à piller</span>
+  </div>
+  <div class="rwho" id="s-who"></div>
+  <div class="bl"><button class="btn big nav" id="s-back" aria-label="Retour à la carte"><span class="face"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg><span class="lab n">Retour</span></span></button></div>
+  <div class="br"><button class="btn big action" id="s-attack" aria-label="Attaquer ce village"><span class="face"><svg class="ic" aria-hidden="true"><use href="#i-swords"/></svg><span class="lab n">Attaquer</span></span></button></div>
+  <div class="shint n" id="s-hint">Touche un bâtiment : sa portée, son butin.</div>
+</div>
 <div id="toast" role="status" hidden></div>
 <div id="guide" hidden><span class="gp"><img data-art="recolteur-tete" alt=""></span><span class="gt" id="guide-t"></span><button class="gn" id="guide-next" hidden>Suite</button><button class="gx" id="guide-skip">Passer le tuto</button></div>
 <div id="lobby" role="dialog" aria-label="Jouer à plusieurs"><div class="win lobby"><div class="ribbon plain"><span class="n" id="lobby-title">Jouer à plusieurs</span></div><button class="x" id="lobby-close" aria-label="Fermer"><span class="face"><svg class="ic" aria-hidden="true"><use href="#i-close"/></svg></span></button><div class="well" id="lobby-body"></div></div></div>
-<script type="module" src="./app-CWY45LAA.js"></script>
+<script type="module" src="./app-YIZQ2P32.js"></script>
 
 </body>
 </html>
