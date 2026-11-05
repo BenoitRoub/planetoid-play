@@ -47,18 +47,51 @@ body.walling #btn-build, body.walling #acts, body.walling .units, body.walling #
 .ctr.army { width: 58px; }
 /* the runes (GDD 03/11), the rank and the trophies: the counters are buttons; a rune's colour says its rarity (--rc) */
 button.ctr { border: 0; padding: 0; background: none; pointer-events: auto; cursor: pointer; font: inherit; color: inherit; text-align: left; }
-.rn { position: relative; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; width: 58px; height: 64px; border-radius: 8px;
-  border: 1.5px solid var(--ink, #2a2016); background: var(--card, #efe6d2); box-shadow: 0 2px 0 var(--ink, #2a2016); cursor: pointer; font: inherit; color: inherit; padding: 2px; }
-.rn .ic { width: 28px; height: 28px; }
-.rn .n { font-size: 10px; line-height: 1.05; text-align: center; }
-.rn.r0 { background: #e9e4da; } .rn.r1 { background: #d9ecfb; } .rn.r2 { background: #ead9fb; } .rn.r3 { background: #fbecc4; }
-.rn.empty { background: rgba(0, 0, 0, .18); border-style: dashed; box-shadow: none; }
-.rn.empty .ic { opacity: .3; }
-.rn.pick { outline: 3px solid #ffd34a; outline-offset: 1px; }
-.rslots { display: flex; flex-direction: column; gap: 6px; }
-.rslot { display: flex; align-items: center; gap: 8px; }
-.rslot .who { width: 92px; font: 600 12px/1.2 "Fredoka", system-ui, sans-serif; color: #f6efe0; }
-.rinv { display: flex; flex-wrap: wrap; gap: 6px; min-height: 66px; }
+/* the sanctuary's window (05/11): our runes on the left, the troops and the defences with their places on the right;
+   a rune is a stone of its rarity's colour with its type's glyph, its bonus under it */
+.win.rwin .well { padding: 8px 8px 4px; }
+.rwrap { display: flex; gap: 10px; align-items: stretch; }
+.rcol { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.rcol.inv { width: 232px; flex: none; padding-right: 10px; border-right: 1.5px solid rgba(242, 195, 90, .35); }
+.rcol.items { flex: 1; }
+.rhead { display: flex; align-items: center; gap: 4px; height: 20px; padding-left: 2px; }
+.rhead .ic { width: 18px; height: 18px; } .rhead .n { font-size: 13px; }
+.rhead .soft { margin-left: auto; font: 600 11px "Fredoka", system-ui, sans-serif; color: var(--soft-text); opacity: .85; }
+.rscroll { display: flex; flex-direction: column; gap: 5px; max-height: min(318px, calc(100 * var(--vh, 1vh) - 178px)); overflow: auto; -webkit-overflow-scrolling: touch; padding: 3px 2px 4px; }
+.rinv { display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
+.rn { position: relative; flex: none; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; width: 50px; height: 54px; border-radius: 8px;
+  border: 1.5px solid var(--ink); background: var(--card); box-shadow: 0 2px 0 var(--ink); cursor: pointer; font: inherit; color: inherit; padding: 2px 1px; }
+.rn > .ic { width: 30px; height: 30px; filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .35)); }
+.rn .rbn { display: flex; align-items: center; gap: 1px; font-size: 10.5px; line-height: 1; }
+.rn .rbn .ic { width: 11px; height: 11px; }
+.rn.r0 { background: linear-gradient(#f4f0e8, #d9d2c4); } .rn.r1 { background: linear-gradient(#e6f3ff, #b9dbfb); } .rn.r2 { background: linear-gradient(#f3e8ff, #d4b8fb); } .rn.r3 { background: linear-gradient(#fff4d6, #f7d685); }
+.rn.pick { outline: 3px solid var(--gold); outline-offset: 1px; box-shadow: 0 2px 0 var(--ink), 0 0 12px 2px rgba(255, 210, 90, .8); }
+.rn.empty { background: rgba(0, 0, 0, .18); border: 1.5px dashed rgba(246, 239, 224, .55); box-shadow: none; }
+.rn.empty.want { border-color: var(--gold); background: rgba(242, 195, 90, .2); animation: rwant 1.1s ease-in-out infinite; }
+@keyframes rwant { 50% { background: rgba(242, 195, 90, .38); } }
+.rn.locked { cursor: default; background: rgba(0, 0, 0, .3); border-color: rgba(0, 0, 0, .45); box-shadow: inset 0 2px 3px rgba(0, 0, 0, .35); gap: 1px; }
+.rn.locked > .ic { width: 15px; height: 15px; opacity: .85; }
+.rn.locked .lvl { width: 19px; height: 21px; } .rn.locked .lvl svg { width: 19px; height: 21px; } .rn.locked .lvl .n { font-size: 10px; }
+.rn.dead { filter: grayscale(.75) brightness(.8); }
+.rrow { display: flex; align-items: center; gap: 8px; min-height: 58px; padding: 2px 6px 2px 4px; border-radius: 8px; background: rgba(0, 0, 0, .2); }
+.rrow.fit { background: rgba(242, 195, 90, .16); box-shadow: inset 0 0 0 1.5px rgba(242, 195, 90, .75); }
+.rrow.nofit { opacity: .4; }
+.rnwho { display: flex; align-items: center; gap: 7px; min-width: 0; flex: 1; }
+.rnwho .pic { flex: none; width: 40px; height: 40px; border-radius: 8px; border: 1.5px solid var(--ink); background: var(--card); object-fit: contain; }
+.rnwho .pic.port { object-fit: cover; object-position: 50% 20%; }
+.rnwho .n { font-size: 13px; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; }
+.rplaces { display: flex; gap: 6px; flex: none; }
+.rnos { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 10px 14px; text-align: center; }
+.rnos .ic.big { width: 72px; height: 72px; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .35)); }
+.rfoot { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 34px; margin-top: 4px; }
+.rfoot .say { margin: 0 4px !important; }
+.rfoot.ask { border-radius: 8px; background: rgba(0, 0, 0, .25); padding: 3px 6px; }
+.rfoot.ask .say { flex: 1; text-align: left !important; }
+.rnone { margin: 14px 4px !important; }
+/* a level that waits for the maison, in the upgrade window */
+.foot .slock { display: flex; align-items: center; gap: 6px; } .foot .slock > .ic { width: 24px; height: 24px; }
+/* a phone held sideways: a narrower inventory */
+@media (max-width: 760px) { .rcol.inv { width: 176px; } .rnwho .n { font-size: 12px; } }
 /* the game's end: the podium */
 .podium { display: flex; justify-content: center; align-items: flex-end; gap: 10px; margin: 4px 0 8px; }
 .podium .pd { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 92px; }
@@ -231,7 +264,7 @@ html.rot body { position: fixed; top: 0; left: 0; width: var(--ph); height: var(
 <div id="toast" role="status" hidden></div>
 <div id="guide" hidden><span class="gp"><img data-art="recolteur-tete" alt=""></span><span class="gt" id="guide-t"></span><button class="gn" id="guide-next" hidden>Suite</button><button class="gx" id="guide-skip">Passer le tuto</button></div>
 <div id="lobby" role="dialog" aria-label="Jouer à plusieurs"><div class="win lobby"><div class="ribbon plain"><span class="n" id="lobby-title">Jouer à plusieurs</span></div><button class="x" id="lobby-close" aria-label="Fermer"><span class="face"><svg class="ic" aria-hidden="true"><use href="#i-close"/></svg></span></button><div class="well" id="lobby-body"></div></div></div>
-<script type="module" src="./app-FM6Q3STD.js"></script>
+<script type="module" src="./app-KSTBHLM6.js"></script>
 
 </body>
 </html>
