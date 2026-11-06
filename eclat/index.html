@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="L’Éclat">
-<meta name="theme-color" content="#1d1409">
+<meta name="theme-color" content="#1a2130">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -56,7 +56,19 @@ html, body { overscroll-behavior: none; -webkit-touch-callout: none; -webkit-tap
 })();
 </script>
 <canvas id="scene" aria-label="L’arène"></canvas>
-<script type="module" src="./app-5ROM3E2A.js"></script>
+<!-- the boot, while the code comes (direction Bannières): the slate, the name, a yellow bar that runs; main.ts takes
+     it away once the start screen is drawn. The name's letters are cut from Bungee and carried here (1 KB). -->
+<style id="boot-css">
+@font-face{font-family:BootBungee;src:url(data:font/woff2;base64,d09GMgABAAAAAAPAABAAAAAABywAAANpAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGhwbIBwqBmAAZBEICoREg2QBNgIkAygLFgAEIAWDDgcgFyQYFhufBSiuBuzGmYMD5Vsvzy+qGJ5pP1Q8H8SmeowgvuS++s0shNmqWYAHcyFlBziIrOhfeJUzAkRAraF7HyRFcJN4dHHggEEmLVtAEKZKABmL9PREkohLOC3ErCzwpJ26XORTN38u/Hv9Bmgi4daiOMLFUhpgTjmsLdEgxIwi/o4yuCMFbhkX2f7+VH2xAIfWoFwAS1qQ4pgbU2rOuyaVMFegXGnTmIC9kNQ+ca0bWkki27fczjq/ZBhmKQK8AICiCEU4cSEEeIgSQzq6Zi7EjRPgvwBITIIkajOfrfmOJsLU6wCcUuLCLmlQJ5MRzABjmZET0hg3gvbXAGzcaDPuaqwJ13/+PbjsphQIQL4kL8DQQAENgmgCgjiZC/z40SDROBPMtJCjpvQ//lvvWkejey8wlZD/KoDaA0AQcAdX4BH4fKjXFQ/tw4rMiIqgIL9Qnw3HldoS8Oj75tGT2m6t7M69khs99Fgx5Ck3L4IFJfxusJ2jrQhVRoiqwGwJdDTH1rIN0jreAXQ1yRFIH89b6OpcNOodzgiT2tU0H7mrdiWOh44YCa58gKhn5M0hu1ieeVYvV4CRxyFbu9cWbjHFs3JHnt+PTby/B5u3HTGZNh5MLLada9qMa8dP5mtzMRf7ZXsbagrX8wtDX+xeGx3lTe+y2h02dlvFL2zcZIsEnduCZj2Isd7GB4uBVlT9HYGjovebvyh2t0othzHzeu9zEb/+gr2vo589n3532Kx3ZU8ivtLp+Vi3jUmBnBRZ4dsI++Dh2Zsze6fj8bpiKqUkfm1gfhxYhWqggSv3UAk3wCSo6ZQnAIWpA48/agF/ZYp+ATw/shtcu/+9P1sZmb4CFwqA4K8mnU8o+N97bu+wBT34EUvJ15Z0KEl26DywUbqKsFFhGEGD/5MAD4NcVXIiQkTTlqvlsCvVHThA5oSXA5zi4wyn5TjLOYnynHMW4d93XESFMBM0a9GrTa1qNToYObLkyGUsVKOSMV6nJtUqs3SuNs3qIhtcx8fp1KFGszbtjKRpxzq0aFciU6ZqtRr6Tutl2KBZo0wb1WnTZr3MNcvJ7JL5KlXr1GCdNjkyZLVY6ZSgweG6It03LNgylcUqX25Uq1kTs2LyuRnN7P7fmphLIfnyz8D51p8fySH7AAK5pLywZBvxPzrtRgAA) format("woff2")}
+#boot{position:fixed;inset:0;z-index:9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#1a2130;color:#fff}
+#boot::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:#3f8cff}
+#boot b{font:400 46px/1 BootBungee,"Arial Black",sans-serif;text-shadow:0 4px 0 rgba(0,0,0,.45)}
+#boot i{position:relative;display:block;width:180px;height:8px;overflow:hidden;background:#0d121c}
+#boot u{position:absolute;top:0;bottom:0;left:0;width:60px;background:#ffd23f;animation:boot 1.1s linear infinite}
+@keyframes boot{from{transform:translateX(-60px)}to{transform:translateX(180px)}}
+</style>
+<div id="boot" aria-label="Chargement"><b>L’ÉCLAT</b><i><u></u></i></div>
+<script type="module" src="./app-RSWHINAQ.js"></script>
 
 </body>
 </html>
