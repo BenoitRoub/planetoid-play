@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="L’Éclat">
+<meta name="theme-color" content="#1d1409">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<script>
+// keep a copy of the app on the phone: it opens even when the network is slow, and updates when it can
+if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+// hide the loading screen once the game has drawn its first frame
+(function wait() { if (window.__ready) { var l = document.getElementById('loading'); if (l) l.remove(); } else setTimeout(wait, 150); })();
+</script>
+<style>
+[hidden] { display: none !important; }
+html, body { overscroll-behavior: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+/* the game is played in landscape: a phone held upright shows it turned a quarter (pages/carte.html, ui/rotate.ts) */
+</style>
+</head>
+<body>
+<title>L’Éclat · Shardholm</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!-- the auto-battler's page: the shell's rotation and screen size are carte.html's own (a phone held upright turns
+     the page a quarter, the screen's size is measured again after anything that may change it) -->
+<script>
+// before anything draws: turned or not, and the screen's size (?rot turns it on a computer, for tests). The game
+// installed on an iPhone is given a window too short by the status bar after a turn or a return to the app, and
+// the page's ground showed under it as a green band (Benoit, 05/11): there, the screen's own size is the size; and
+// everywhere the size is measured again a moment after anything that may change it, as it comes late.
+(function () {
+  var d = document.documentElement, q = matchMedia('(orientation: portrait) and (pointer: coarse)'), f = /[?&]rot(&|$)/.test(location.search);
+  var port = matchMedia('(orientation: portrait)'), ios = navigator.standalone === true;
+  function set() {
+    var w = innerWidth, h = innerHeight;
+    if (ios && screen.width && screen.height) {
+      var a = Math.min(screen.width, screen.height), b = Math.max(screen.width, screen.height);
+      w = Math.max(w, port.matches ? a : b); h = Math.max(h, port.matches ? b : a);
+    }
+    window.__screen = { w: w, h: h };
+    d.style.setProperty('--pw', w + 'px'); d.style.setProperty('--ph', h + 'px'); d.classList.toggle('rot', q.matches || f); scrollTo(0, 0);
+  }
+  var later = 0;
+  function soon() { set(); clearTimeout(later); later = setTimeout(function () { set(); later = setTimeout(set, 600); }, 150); }
+  set(); addEventListener('resize', soon); addEventListener('orientationchange', soon); addEventListener('pageshow', soon);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) soon(); });
+  if (window.visualViewport) visualViewport.addEventListener('resize', soon);
+  if (q.addEventListener) q.addEventListener('change', soon);
+})();
+</script>
+<canvas id="scene" aria-label="L’arène"></canvas>
+<script type="module" src="./app-5ROM3E2A.js"></script>
+
+</body>
+</html>
