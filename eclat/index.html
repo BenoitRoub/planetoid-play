@@ -39,11 +39,15 @@ html, body { overscroll-behavior: none; -webkit-touch-callout: none; -webkit-tap
   var d = document.documentElement, q = matchMedia('(orientation: portrait) and (pointer: coarse)'), f = /[?&]rot(&|$)/.test(location.search);
   var port = matchMedia('(orientation: portrait)'), ios = navigator.standalone === true;
   function set() {
-    var w = innerWidth, h = innerHeight;
+    // the largest of what the browser says (08/11, Benoit: at launch a green band on one side, gone only by turning
+    // the phone: one of these comes late and right while another stays wrong)
+    var e = d.clientWidth || 0, eh = d.clientHeight || 0, v = window.visualViewport;
+    var w = Math.max(innerWidth, e, v ? Math.round(v.width * v.scale) : 0), h = Math.max(innerHeight, eh, v ? Math.round(v.height * v.scale) : 0);
     if (ios && screen.width && screen.height) {
       var a = Math.min(screen.width, screen.height), b = Math.max(screen.width, screen.height);
       w = Math.max(w, port.matches ? a : b); h = Math.max(h, port.matches ? b : a);
     }
+    if (window.__screen && window.__screen.w === w && window.__screen.h === h && d.classList.contains('rot') === (q.matches || f)) return;
     window.__screen = { w: w, h: h };
     d.style.setProperty('--pw', w + 'px'); d.style.setProperty('--ph', h + 'px'); d.classList.toggle('rot', q.matches || f); scrollTo(0, 0);
   }
@@ -53,6 +57,9 @@ html, body { overscroll-behavior: none; -webkit-touch-callout: none; -webkit-tap
   document.addEventListener('visibilitychange', function () { if (!document.hidden) soon(); });
   if (window.visualViewport) visualViewport.addEventListener('resize', soon);
   if (q.addEventListener) q.addEventListener('change', soon);
+  // and measured again without waiting for an event: often in the first seconds (when the app opens), then now and
+  // then (nothing changes when nothing moved)
+  var n = 0, tick = setInterval(function () { set(); if (++n >= 20) { clearInterval(tick); setInterval(set, 2000); } }, 250);
 })();
 </script>
 <canvas id="scene" aria-label="L’arène"></canvas>
@@ -68,7 +75,7 @@ html, body { overscroll-behavior: none; -webkit-touch-callout: none; -webkit-tap
 @keyframes boot{from{transform:translateX(-60px)}to{transform:translateX(180px)}}
 </style>
 <div id="boot" aria-label="Chargement"><b>L’ÉCLAT</b><i><u></u></i></div>
-<script type="module" src="./app-XTVS2KOI.js"></script>
+<script type="module" src="./app-TFFTBFTF.js"></script>
 
 </body>
 </html>
