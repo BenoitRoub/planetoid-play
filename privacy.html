@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy</title>
+<style>
+  :root { --bg: #f6f4ef; --ink: #1d2230; --mute: #5d6577; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #141821; --ink: #e9ecf2; --mute: #9aa3b5; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 26px; margin: 0 0 4px; } h2 { font-size: 18px; margin: 28px 0 6px; }
+  p, li { color: var(--ink); } small, small a { color: var(--mute); }
+</style>
+</head>
+<body>
+<main>
+<h1>Privacy</h1>
+<small>Battle for Kelmora · updated November 11, 2026 · <a href="confidentialite.html" hreflang="fr" lang="fr">Français</a></small>
+
+<h2>The profile</h2>
+<p>The game is played without an account. On first launch, the phone creates a random key and keeps it; the server only knows its fingerprint. The profile holds a name, an avatar, experience, rank, game history and the list of friends added by code.</p>
+
+<h2>What is measured</h2>
+<p>The game uses Google Analytics for Firebase to count launches, sessions and the game's steps (tutorial, games, purchases). These measures show how the game is played and measure advertising campaigns. No advertising identifier of the device is used, and no data is sold.</p>
+
+<h2>Purchases</h2>
+<p>In-app purchases go through the App Store or Google Play, and are tracked by RevenueCat to grant the skins to the profile and restore them. The game never sees any payment method.</p>
+
+<h2>Notifications</h2>
+<p>When they are on, the server keeps the phone's notification token and its language to send friends' invitations. They are turned off in the phone's settings.</p>
+
+<h2>Where the data is</h2>
+<p>Profiles and games are kept by Supabase (European Union, Ireland). Firebase's measures are processed by Google.</p>
+
+<h2>Deleting the profile</h2>
+<p>In the game: Profile, then “Delete Profile”. The profile, its friends, its invitations and its notification tokens are erased from the server. Purchases stay tied to the App Store or Google Play account and can be restored on a new profile.</p>
+
+<h2>Contact</h2>
+<p>bn.roub@gmail.com</p>
+</main>
+</body>
+</html>
